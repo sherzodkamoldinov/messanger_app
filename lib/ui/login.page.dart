@@ -1,8 +1,8 @@
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/ui/home_page.dart';
+import 'package:chat_app/utils/my_utils.dart';
 import 'package:chat_app/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -15,58 +15,61 @@ class LoginPage extends StatefulWidget {
 class _HomePageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-
-    switch (authProvider.status) {
-      
-      case Status.authenticateError:
-        Fluttertoast.showToast(msg: 'Sign in fail');
-        break;
-        
-      case Status.authenticateCanceled:
-        Fluttertoast.showToast(msg: 'Sign in canceled');
-        break;
-
-      case Status.authenticated:
-        Fluttertoast.showToast(msg: 'Sign in success');
-        break;
-
-      default:
-        break;
-
-    }
-
     return Scaffold(
       backgroundColor: Colors.black87,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Image.asset('assets/images/back.png'),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: GestureDetector(
-              onTap: () async {
-                bool isSuccess = await authProvider.handleSignIn();
-                if (isSuccess) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                }
-              },
-              child: Image.asset('assets/images/google_login.jpg'),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Stack(
+          children: [
+            // MAIN
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // IMAGE
+                Image.asset('assets/images/back.png'),
+                const SizedBox(height: 20),
+
+                // SIGN IN BUTTON
+                GestureDetector(
+                  onTap: () async {
+                    await context.read<AuthProvider>().handleSignIn();
+
+                    if (!mounted) return;
+                    switch (context.read<AuthProvider>().status) {
+                      case Status.authenticateError:
+                        CustomSnackbar.showSnackbar(context, 'Sign in fail', SnackbarType.error);
+                        break;
+
+                      case Status.authenticateCanceled:
+                        CustomSnackbar.showSnackbar(context, 'Sign in canceled', SnackbarType.warning);
+                        break;
+
+                      case Status.authenticated:
+                        CustomSnackbar.showSnackbar(context, 'Sign in success', SnackbarType.success);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                        break;
+
+                      default:
+                        break;
+                    }
+                  },
+                  child: Image.asset('assets/images/google_login.jpg'),
+                ),
+              ],
             ),
-          ),
-          Positioned(
-            child: authProvider.status == Status.authenticating ? const LoadingView() : const SizedBox.shrink(),
-          ),
-        ],
+
+            // LOADING VIEW
+            Align(
+              alignment: Alignment.center,
+              child: context.watch<AuthProvider>().status == Status.authenticating ? const LoadingView() : const SizedBox.shrink(),
+            ),
+          ],
+        ),
       ),
     );
   }

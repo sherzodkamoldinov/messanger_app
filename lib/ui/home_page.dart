@@ -17,7 +17,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
@@ -45,6 +44,7 @@ class _HomePageState extends State<HomePage> {
   late String currentUserId;
   late AuthProvider authProvider;
   late HomeProvider homeProvider;
+
   Debouncer searchDebouncer = Debouncer(milliseconds: 300);
   TextEditingController searchController = TextEditingController();
   StreamController<bool> btnClearController = StreamController<bool>();
@@ -77,8 +77,6 @@ class _HomePageState extends State<HomePage> {
         (Route<dynamic> route) => false,
       );
     }
-    registerNotification();
-    configureLocalNotification();
     listScrollController.addListener(() {
       scrollListener();
     });
@@ -88,65 +86,6 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
     btnClearController.close();
-  }
-
-  void registerNotification() {
-    firebaseMessaging.requestPermission();
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      if (message.notification != null) {
-        showNotification(message.notification!);
-      }
-      return;
-    });
-
-    firebaseMessaging.getToken().then((token) {
-      if (token != null) {
-        homeProvider.updateDataFirestore(FirestoreConstants.pathUserCollection, currentUserId, {'pushToken': token});
-      }
-    }).catchError((err) {
-      Fluttertoast.showToast(msg: err.message.toString());
-    });
-  }
-
-  void configureLocalNotification() {
-    // Andoir notif set
-    AndroidInitializationSettings initializationAndroidSettings = const AndroidInitializationSettings('app_icon');
-    // IOS notif set
-    DarwinInitializationSettings initializationSettingsDarwin = const DarwinInitializationSettings();
-
-    InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationAndroidSettings,
-      iOS: initializationSettingsDarwin,
-    );
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
- 
-  void showNotification(RemoteNotification remoteNotification) async {
-    AndroidNotificationDetails androidNotificationDetails = const AndroidNotificationDetails(
-      'com.chat_app.uz',
-      'IChat App',
-      playSound: true,
-      enableVibration: true,
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-
-    DarwinNotificationDetails iosNotificationDetails = const DarwinNotificationDetails();
-
-    NotificationDetails notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: iosNotificationDetails,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      remoteNotification.title,
-      remoteNotification.body,
-      notificationDetails,
-      payload: null,
-    );
   }
 
   @override

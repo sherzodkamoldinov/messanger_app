@@ -34,7 +34,12 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider(googleSignIn: GoogleSignIn(), firebaseAuth: FirebaseAuth.instance, firestore: firebaseFirestore, preferences: prefs),
+          create: (_) => AuthProvider(
+            googleSignIn: GoogleSignIn(),
+            firebaseAuth: FirebaseAuth.instance,
+            firestore: firebaseFirestore,
+            preferences: prefs,
+          ),
         ),
         Provider<SettingProvider>(
           create: (_) => SettingProvider(

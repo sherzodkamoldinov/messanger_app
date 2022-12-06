@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_app/data/models/user_chat_model.dart';
 import 'package:chat_app/utils/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -34,6 +36,7 @@ class AuthProvider extends ChangeNotifier {
         _firestore = firestore,
         _preferences = preferences;
 
+  // Get UserFirebaseId from Storage
   String? getUserFirebaseId() {
     return _preferences.getString(FirestoreConstants.id);
   }
@@ -62,84 +65,64 @@ class AuthProvider extends ChangeNotifier {
         idToken: googleAuth.idToken,
       );
 
-      User? firebaseUser =
-          (await _firebaseAuth.signInWithCredential(credential)).user;
+      User? firebaseUser = (await _firebaseAuth.signInWithCredential(credential)).user;
 
       if (firebaseUser != null) {
         // GET USER INFO IN FIRESTORE
-        final QuerySnapshot result = await _firestore
-            .collection(FirestoreConstants.pathUserCollection)
-            .where(FirestoreConstants.id, isEqualTo: firebaseUser.uid)
-            .get();
+        final QuerySnapshot result = await _firestore.collection(FirestoreConstants.pathUserCollection).where(FirestoreConstants.id, isEqualTo: firebaseUser.uid).get();
 
         final List<DocumentSnapshot> documents = result.docs;
 
         // IF USER INFO IS NOT EXIST IN FIRESTORE (SAVE INFO IN LOCALE AND FIRESTORE)
         if (documents.isEmpty) {
-          _firestore
-              .collection(FirestoreConstants.pathUserCollection)
-              .doc(firebaseUser.uid)
-              .set({
+          // SAVE TO FIRESTORE
+          _firestore.collection(FirestoreConstants.pathUserCollection).doc(firebaseUser.uid).set({
             FirestoreConstants.id: firebaseUser.uid,
             FirestoreConstants.nickname: firebaseUser.displayName,
             FirestoreConstants.photoUrl: firebaseUser.photoURL,
-            FirestoreConstants.createdAt:
-                DateTime.now().millisecondsSinceEpoch.toString(),
+            FirestoreConstants.createdAt: DateTime.now().millisecondsSinceEpoch.toString(),
             FirestoreConstants.chattingWith: null
           });
-          User? currentUser = firebaseUser;
-          await _preferences.setString(FirestoreConstants.id, currentUser.uid);
-          await _preferences.setString(
-              FirestoreConstants.nickname, currentUser.displayName ?? "");
-          await _preferences.setString(
-              FirestoreConstants.photoUrl, currentUser.photoURL ?? "");
-          await _preferences.setString(
-              FirestoreConstants.phoneNumber, currentUser.phoneNumber ?? "");
-          await _preferences.setString(FirestoreConstants.id, currentUser.uid);
+
+          // SAVE TO LOCALE STORAGE
+
+          await _preferences.setString(FirestoreConstants.id, firebaseUser.uid);
+          await _preferences.setString(FirestoreConstants.nickname, firebaseUser.displayName ?? "");
+          await _preferences.setString(FirestoreConstants.photoUrl, firebaseUser.photoURL ?? "");
+          await _preferences.setString(FirestoreConstants.phoneNumber, firebaseUser.phoneNumber ?? "");
         } else {
           // IF USER INFO IS EXIST IN FIRESTORE (SAVE INFO ONLY LOCALE)
-
           DocumentSnapshot documentSnapshot = documents[0];
-          UserChatModel userChat = UserChatModel.fromDocument(documentSnapshot.data() as Map<String, dynamic>);
 
-          await _preferences.setString(FirestoreConstants.id, userChat.id);
-          await _preferences.setString(
-              FirestoreConstants.nickname, userChat.nickname);
-          await _preferences.setString(
-              FirestoreConstants.photoUrl, userChat.photoUrl);
-          await _preferences.setString(
-              FirestoreConstants.aboutMe, userChat.aboutMe);
-          await _preferences.setString(
-              FirestoreConstants.phoneNumber, userChat.phoneNumber);
+          UserChatModel currentUser = UserChatModel.fromDocument(documentSnapshot.data() as Map<String, dynamic>);
+
+          await _preferences.setString(FirestoreConstants.id, currentUser.id);
+          await _preferences.setString(FirestoreConstants.nickname, currentUser.nickname);
+          await _preferences.setString(FirestoreConstants.photoUrl, currentUser.photoUrl);
+          await _preferences.setString(FirestoreConstants.aboutMe, currentUser.aboutMe);
+          await _preferences.setString(FirestoreConstants.phoneNumber, currentUser.phoneNumber);
         }
 
         notify(Status.authenticated);
         return true;
-
       } else {
-
         notify(Status.authenticateError);
         return false;
-
       }
     } else {
-
       notify(Status.authenticateCanceled);
       return false;
-
     }
   }
 
   // SIGN OUT USER FROM APP
   Future<void> handleSignOut() async {
-
     notify(Status.uninitialized);
-    
+
     await _firebaseAuth.signOut();
 
     await _googleSignIn.disconnect();
     await _googleSignIn.signOut();
-
   }
 
   // SET STATE

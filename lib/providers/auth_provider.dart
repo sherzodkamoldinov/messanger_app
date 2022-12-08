@@ -89,7 +89,7 @@ class AuthProvider extends ChangeNotifier {
           await _preferences.setString(FirestoreConstants.id, firebaseUser.uid);
           await _preferences.setString(FirestoreConstants.nickname, firebaseUser.displayName ?? "");
           await _preferences.setString(FirestoreConstants.photoUrl, firebaseUser.photoURL ?? "");
-          await _preferences.setString(FirestoreConstants.phoneNumber, firebaseUser.phoneNumber ?? "");
+          
         } else {
           // IF USER INFO IS EXIST IN FIRESTORE (SAVE INFO ONLY LOCALE)
           DocumentSnapshot documentSnapshot = documents[0];
@@ -101,6 +101,7 @@ class AuthProvider extends ChangeNotifier {
           await _preferences.setString(FirestoreConstants.photoUrl, currentUser.photoUrl);
           await _preferences.setString(FirestoreConstants.aboutMe, currentUser.aboutMe);
           await _preferences.setString(FirestoreConstants.phoneNumber, currentUser.phoneNumber);
+          await _preferences.setString(FirestoreConstants.dialCode, currentUser.dialCode);
         }
 
         notify(Status.authenticated);

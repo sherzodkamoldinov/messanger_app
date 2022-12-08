@@ -21,4 +21,5 @@ class FirestoreConstants {
   static const content = "content";
   static const type = "type";
   static const createdAt = 'createdAt';
+  static const dialCode = 'dialCode';
 }

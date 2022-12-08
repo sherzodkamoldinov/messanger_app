@@ -1,8 +1,10 @@
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/ui/home_page.dart';
 import 'package:chat_app/utils/my_utils.dart';
+import 'package:chat_app/widgets/custom_button.dart';
 import 'package:chat_app/widgets/loading_view.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,7 +32,11 @@ class _HomePageState extends State<LoginPage> {
                 const SizedBox(height: 20),
 
                 // SIGN IN BUTTON
-                GestureDetector(
+                CustomButton(
+                  title: 'Sign in with Google',
+                  icon: FontAwesomeIcons.google,
+                  iconColor: const Color.fromARGB(255, 249, 17, 0),
+                  backgroundColor: const Color.fromARGB(255, 255, 111, 111),
                   onTap: () async {
                     await context.read<AuthProvider>().handleSignIn();
 
@@ -58,7 +64,6 @@ class _HomePageState extends State<LoginPage> {
                         break;
                     }
                   },
-                  child: Image.asset('assets/images/google_login.jpg'),
                 ),
               ],
             ),

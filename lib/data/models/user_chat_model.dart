@@ -6,6 +6,7 @@ class UserChatModel {
   String nickname;
   String aboutMe;
   String phoneNumber;
+  String dialCode;
 
   UserChatModel({
     required this.id,
@@ -13,6 +14,7 @@ class UserChatModel {
     required this.nickname,
     required this.aboutMe,
     required this.phoneNumber,
+    required this.dialCode,
   });
 
   Map<String, dynamic> toJson() {
@@ -22,6 +24,7 @@ class UserChatModel {
       FirestoreConstants.nickname: nickname,
       FirestoreConstants.aboutMe: aboutMe,
       FirestoreConstants.phoneNumber: phoneNumber,
+      FirestoreConstants.dialCode: dialCode,
     };
   }
 
@@ -32,6 +35,7 @@ class UserChatModel {
       nickname: (data[FirestoreConstants.nickname] as String?) ?? "",
       aboutMe: (data[FirestoreConstants.aboutMe] as String?) ?? "",
       phoneNumber: (data[FirestoreConstants.phoneNumber] as String?) ?? "",
+      dialCode: (data[FirestoreConstants.dialCode] as String?) ?? "",
     );
   }
 
@@ -41,6 +45,7 @@ class UserChatModel {
     String? nickname,
     String? aboutMe,
     String? phoneNumber,
+    String? dialCode,
   }) {
     return UserChatModel(
       id: id ?? this.id,
@@ -48,6 +53,7 @@ class UserChatModel {
       nickname: nickname ?? this.nickname,
       aboutMe: aboutMe ?? this.aboutMe,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      dialCode: dialCode ?? this.dialCode,
     );
   }
 }

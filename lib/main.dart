@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
             preferences: prefs,
           ),
         ),
-        Provider<SettingProvider>(
+        ChangeNotifierProvider<SettingProvider>(
           create: (_) => SettingProvider(
             firebaseStorage: firebaseStorage,
             firestore: firebaseFirestore,

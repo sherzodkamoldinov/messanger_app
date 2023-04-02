@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:messanger_app/screens/auth/login_screen.dart';
-import 'package:messanger_app/screens/home_screen.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:messanger_app/screens/splash_screen.dart';
 import 'firebase_options.dart';
 
-void main() {
+void main()async {
   WidgetsFlutterBinding.ensureInitialized();
+  await _firebaseInitializeApp();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-  _firebaseInitializeApp();
   runApp(const MyApp());
 }
 

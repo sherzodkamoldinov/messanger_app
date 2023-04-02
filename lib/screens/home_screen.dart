@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messanger_app/api/apis.dart';
+import 'package:messanger_app/models/chat_user.dart';
 import 'package:messanger_app/widgets/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ChatUserModel> data = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,12 +39,40 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: 2,
-        padding: const EdgeInsets.only(top: 10),
-        itemBuilder: (context, index) {
-        return ChatUserCard();
-      }),
+      body: StreamBuilder(
+        stream: APIs.firestore.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            // if data is loading
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return const Center(child: CircularProgressIndicator());
+
+            // if some or all data is loaded then show it
+            case ConnectionState.active:
+            case ConnectionState.done:
+              final snapshotData = snapshot.data?.docs;
+              data = snapshotData?.map((e) => ChatUserModel.fromJson(e.data())).toList() ?? [];
+
+              if (data.isEmpty) {
+                return const Text(
+                  'No Connection Found!',
+                  style: TextStyle(fontSize: 20),
+                );
+              }else{
+                return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                padding: const EdgeInsets.only(top: 10),
+                itemBuilder: (context, index) {
+                  return ChatUserCard(
+                    user: data[index],
+                  );
+                },
+              );
+              }
+          }
+        },
+      ),
     );
   }
 }

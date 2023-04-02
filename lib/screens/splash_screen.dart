@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(const Duration(milliseconds: 2500), () {
       if (APIs.auth.currentUser != null) {
-        debugPrint('\nUser: ${APIs.auth..currentUser}');
+        debugPrint('\nUser: ${APIs.auth.currentUser}');
         /// navigate to [Homescreen]
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
       } else {

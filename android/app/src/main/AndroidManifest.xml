@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.messanger_app">
+     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="Messanger App"
         android:name="${applicationName}"
@@ -25,6 +26,26 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <service android:name="com.google.firebase.components.ComponentDiscoveryService" >
+       <meta-data
+           android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+           android:value="com.google.firebase.components.ComponentRegistrar" />
+       <meta-data
+           android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+           android:value="com.google.firebase.components.ComponentRegistrar"/>
+       <meta-data
+           android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+           android:value="com.google.firebase.components.ComponentRegistrar" />
+       <meta-data
+           android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+           android:value="com.google.firebase.components.ComponentRegistrar" />
+       <meta-data
+           android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+           android:value="com.google.firebase.components.ComponentRegistrar"/>
+       <meta-data
+           android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+           android:value="com.google.firebase.components.ComponentRegistrar" />
+   </service>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

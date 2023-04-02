@@ -1,14 +1,14 @@
 class ChatUserModel {
   ChatUserModel({
-    required this.image,
-    required this.about,
-    required this.name,
-    required this.createdAt,
-    required this.isOnline,
-    required this.id,
-    required this.lastActive,
-    required this.email,
-    required this.pushToken,
+     this.image = '',
+     this.about = '',
+     this.name = '',
+     this.createdAt = '',
+     this.isOnline = false,
+     this.id = '',
+     this.lastActive = '',
+     this.email = '',
+     this.pushToken = '',
   });
   final String image;
   final String about;

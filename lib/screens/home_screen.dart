@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messanger_app/api/apis.dart';
 import 'package:messanger_app/models/chat_user.dart';
+import 'package:messanger_app/screens/profile_screen.dart';
 import 'package:messanger_app/widgets/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,9 +23,17 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text('Messenger App'),
         actions: [
           // search user button
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
           // more features button
-          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  ProfileScreen(user: data[0],)));
+            },
+            icon: const Icon(Icons.more_vert),
+          ),
         ],
       ),
       floatingActionButton: Padding(
@@ -59,16 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   'No Connection Found!',
                   style: TextStyle(fontSize: 20),
                 );
-              }else{
+              } else {
                 return ListView.builder(
-                itemCount: snapshot.data!.docs.length,
-                padding: const EdgeInsets.only(top: 10),
-                itemBuilder: (context, index) {
-                  return ChatUserCard(
-                    user: data[index],
-                  );
-                },
-              );
+                  itemCount: snapshot.data!.docs.length,
+                  padding: const EdgeInsets.only(top: 10),
+                  itemBuilder: (context, index) {
+                    return ChatUserCard(
+                      user: data[index],
+                    );
+                  },
+                );
               }
           }
         },

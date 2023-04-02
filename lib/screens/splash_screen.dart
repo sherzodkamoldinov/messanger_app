@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:messanger_app/api/apis.dart';
 import 'package:messanger_app/screens/auth/login_screen.dart';
 import 'package:messanger_app/screens/home_screen.dart';
 
@@ -13,8 +14,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+    Future.delayed(const Duration(milliseconds: 2500), () {
+      if (APIs.auth.currentUser != null) {
+        debugPrint('\nUser: ${APIs.auth..currentUser}');
+        /// navigate to [Homescreen]
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+      } else {
+        /// navigate to [Loginscreen]
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
+      }
     });
   }
 

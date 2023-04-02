@@ -17,10 +17,20 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # for using cupertino icons
   cupertino_icons: ^1.0.2
+
+  # for integrating firebase
   firebase_core: ^2.9.0
+
+  # for handling firebase auth
   firebase_auth: ^4.4.0
+
+  # for handling google sign in
   google_sign_in: ^6.0.2
+
+  # for accessing cloud firestore database
+  cloud_firestore: ^4.5.0
   
 
 dev_dependencies:

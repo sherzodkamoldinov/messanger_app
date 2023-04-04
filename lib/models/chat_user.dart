@@ -1,24 +1,24 @@
 class ChatUserModel {
   ChatUserModel({
-     this.image = '',
-     this.about = '',
-     this.name = '',
-     this.createdAt = '',
-     this.isOnline = false,
-     this.id = '',
-     this.lastActive = '',
-     this.email = '',
-     this.pushToken = '',
+    this.image = '',
+    this.about = '',
+    this.name = '',
+    this.createdAt = '',
+    this.isOnline = false,
+    this.id = '',
+    this.lastActive = '',
+    this.email = '',
+    this.pushToken = '',
   });
-  final String image;
-  final String about;
-  final String name;
-  final String createdAt;
-  final bool isOnline;
-  final String id;
-  final String lastActive;
-  final String email;
-  final String pushToken;
+  String image;
+  String about;
+  String name;
+  String createdAt;
+  bool isOnline;
+  String id;
+  String lastActive;
+  String email;
+  String pushToken;
 
   factory ChatUserModel.fromJson(Map<String, dynamic> json) {
     return ChatUserModel(
